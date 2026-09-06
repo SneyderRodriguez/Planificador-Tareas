@@ -45,6 +45,12 @@ aside .perfil {
     margin-bottom: 1rem;
 }
 
+aside .perfil a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 aside .perfil span {
     width: 80px;
     height: 80px;
@@ -52,6 +58,11 @@ aside .perfil span {
     object-fit: cover;
     border: 3px solid var(--sleepy-blue);
     background-color: var(--mount-etna);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    color: var(--sleepy-blue);
 }
 
 aside button {
