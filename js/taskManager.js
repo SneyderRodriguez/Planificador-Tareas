@@ -2,7 +2,7 @@ class TaskManager {
     constructor() {
         this.storageKey = "tasks";
         this.tasks = this.loadTasks();
-        this.currentId = this.getNextId();
+        this.currentId = this.loadCurrentId();
     }
 
     loadTasks() {
@@ -23,11 +23,28 @@ class TaskManager {
         }
     }
 
+    loadCurrentId(){
+        const savedCurrentId = localStorage.getItem("currentId");
+        if(savedCurrentId === null){
+            return this.getNextId();
+        }
+        const currentId = Number(savedCurrentId);
+        if (!Number.isInteger(currentId) || currentId <1) {
+            console.warn("El currentId guardado no es válido.");
+            return this.getNextId();
+        }
+        return currentId;
+    }
+
     saveTasks() {
         try {
             localStorage.setItem(
                 this.storageKey,
                 JSON.stringify(this.tasks)
+            );
+            localStorage.setItem(
+                "currentId", 
+                String(this.currentId)
             );
         } catch (error) {
             console.error("No se pudieron guardar las tareas:", error);
