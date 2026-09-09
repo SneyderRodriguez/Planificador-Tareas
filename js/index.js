@@ -227,7 +227,8 @@ if (taskList) {
     });
 
     taskList.addEventListener("click", event => {
-        const taskElement = detailsButton.closest("[data-task-id]");
+        const taskElement = event.target.closest("[data-task-id]");
+
         if (!taskElement) {
             return;
         }
@@ -238,11 +239,13 @@ if (taskList) {
             console.warn("No se encontró la tarea seleccionada.");
             return;
         }
+
         if (event.target.classList.contains("done-button")) {
             taskManager.updateTaskStatus(taskId, true);
             renderTasks();
             return;
         }
+
         const deleteButton = event.target.closest(".delete-button");
         if (deleteButton) {
             deleteTaskFromInterface(deleteButton);
@@ -287,7 +290,6 @@ function deleteTaskFromInterface(deleteButton) {
         showMessage("No se pudo eliminar", "La tarea no fue encontrada.", "error");
         return;
     }
-    taskManager.deleteTask(taskId);
     taskManager.saveTasks();
     renderTasks();
     showMessage("Tarea eliminada", "La tarea se eliminó correctamente.", "success");
