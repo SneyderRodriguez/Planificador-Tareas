@@ -1,6 +1,7 @@
 class TaskManager {
     constructor() {
         this.storageKey = "tasks";
+        this.currentIdStorageKey = "currentId"
         this.tasks = this.loadTasks();
         this.currentId = this.loadCurrentId();
     }
@@ -24,7 +25,7 @@ class TaskManager {
     }
 
     loadCurrentId(){
-        const savedCurrentId = localStorage.getItem("currentId");
+        const savedCurrentId = localStorage.getItem(this.currentIdStorageKey);
         if(savedCurrentId === null){
             return this.getNextId();
         }
@@ -43,7 +44,7 @@ class TaskManager {
                 JSON.stringify(this.tasks)
             );
             localStorage.setItem(
-                "currentId", 
+                this.currentIdStorageKey, 
                 String(this.currentId)
             );
         } catch (error) {
@@ -119,6 +120,9 @@ class TaskManager {
         }
         const taskWasDeleted = newTasks.length !== this.tasks.length;
         this.tasks = newTasks;
+        if (taskWasDeleted) {
+            this.saveTasks();
+        }
         return taskWasDeleted;
     }
 }

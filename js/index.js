@@ -290,7 +290,6 @@ function deleteTaskFromInterface(deleteButton) {
         showMessage("No se pudo eliminar", "La tarea no fue encontrada.", "error");
         return;
     }
-    taskManager.saveTasks();
     renderTasks();
     showMessage("Tarea eliminada", "La tarea se eliminó correctamente.", "success");
 }
