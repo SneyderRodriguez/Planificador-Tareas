@@ -37,6 +37,8 @@ aside {
     flex-direction: column;
     gap: 1.2rem;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    min-height: 100vh;
+    box-sizing: border-box;
 }
 
 aside .perfil {
