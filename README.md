@@ -69,7 +69,7 @@ Dado que este proyecto está construido con tecnologías web estáticas (Fronten
 ### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/SneyderRodriguez/Portafolio.git
+git clone https://github.com/SneyderRodriguez/Thyra-Frontend.git
 ```
 
 ### 2. Entrar al proyecto
@@ -116,7 +116,7 @@ Puedes visitar la versión desplegada del portafolio:
 
 ## 🌐 Enlaces del Proyecto
 🔗 **Repositorio GitHub:** [Planificador-Tareas](https://github.com/SneyderRodriguez/Portafolio.git)
-🌐 **Sitio Web (Demo):** [planificadortareas.netlify.app](https://planificadortareas.netlify.app/)
+🌐 **Sitio Web (Demo):** [planificadortareas.netlify.app](https://thyra.netlify.app/)
 🎨 **Diseño en Figma:** [Ver prototipo interactivo](https://www.figma.com/design/nlFICrWEFIUmrLWeGmzA3Q/Proyecto-Final?node-id=0-1&t=eTfguzsXhPs48kpi-1)
 📋 **Tablero de Trello:** [Ver gestión ágil](https://trello.com/invite/b/6a7c84bcd40168cda8318782/ATTIa6bb7f8569b7329eb7dd04a76495db530B915817/to-do)
 
