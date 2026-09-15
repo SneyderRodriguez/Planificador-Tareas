@@ -1,4 +1,4 @@
-:root{
+:root {
     --coarse-wool: #1A2129;
     --sleepy-blue: #BCCCCF;
     --cape-cod-blue: #92A3A6;
@@ -78,14 +78,14 @@ aside button {
     text-align: left;
 }
 
-aside .task-create,
-.task-list {
+aside .btn-task-create,
+.btn-task-list {
     background-color: var(--sleepy-blue);
     color: var(--coarse-wool);
 }
 
-aside .task-create:hover,
-.task-list:hover {
+aside .btn-task-create:hover,
+.btn-task-list:hover {
     background-color: var(--mount-etna);
     color: var(--sleepy-blue);
 }
@@ -225,7 +225,7 @@ aside .task-create:hover,
     background-color: var(--cape-cod-blue);
     border-radius: 12px;
     border: none;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
 .modal-header {
@@ -239,6 +239,87 @@ aside .task-create:hover,
     filter: invert(1);
 }
 
+.task-filters {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 25px;
+}
+
+.task-list-panel {
+    background-color: var(--night-rendezvous);
+    padding: 1.8rem;
+    border-radius: 12px;
+    border: 1px solid var(--mount-etna);
+    box-shadow: 0 4px 12px rgba(26, 33, 41, 0.05);
+}
+
+.task-list-panel .list-group-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 1rem 1.25rem;
+    margin-bottom: 8px;
+
+    border-color: #edf2f7;
+    border-radius: 8px !important;
+    background-color: #fafbfc;
+}
+
+.task-list-panel .list-group-item>span {
+    flex: 1;
+    min-width: 0;
+}
+
+.task-list-panel .task-status {
+    width: 130px;
+    flex-shrink: 0;
+}
+
+.task-list-panel .task-details,
+.task-list-panel .done-button,
+.task-list-panel .delete-button {
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.task-list-panel .task-details {
+    background-color: var(--sleepy-blue);
+    border-color: var(--sleepy-blue);
+    color: var(--coarse-wool);
+}
+
+.task-list-panel .task-details:hover {
+    background-color: var(--cape-cod-blue);
+    border-color: var(--cape-cod-blue);
+    color: var(--coarse-wool);
+}
+
+.task-list-panel .done-button {
+    background-color: var(--finalizado);
+    border-color: var(--finalizado);
+    color: white;
+}
+
+.task-list-panel .done-button:hover {
+    background-color: var(--cape-cod-blue);
+    border-color: var(--cape-cod-blue);
+    color: white;
+}
+
+.task-list-panel .delete-button {
+    background-color: var(--alta);
+    border-color: var(--alta);
+    color: white;
+}
+
+.task-list-panel .delete-button:hover {
+    background-color: var(--mount-etna);
+    border-color: var(--mount-etna);
+    color: white;
+}
+
 @media (max-width: 1200px) {
     .paneles {
         grid-template-columns: 1fr;
@@ -249,11 +330,13 @@ aside .task-create:hover,
     main {
         flex-direction: column;
     }
+
     aside {
         width: 100%;
     }
+
     .form-bottom {
         grid-template-columns: 1fr;
     }
-    
+
 }

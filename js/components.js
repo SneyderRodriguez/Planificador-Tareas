@@ -46,8 +46,8 @@ document.addEventListener("componentesCargados", (evento) => {
     const { estamosEnDashboard, rutaBase } = evento.detail;
 
     // Seleccionamos los botones del aside
-    const btnCrear = document.querySelector('.task-create');
-    const btnLista = document.querySelector('.task-list');
+    const btnCrear = document.querySelector('.btn-task-create');
+    const btnLista = document.querySelector('.btn-task-list');
     const btnPerfil = document.querySelector('.perfil a'); // Botón de inicio
 
     // Si estamos en dashboard, los HTML destino están al lado ('./')
