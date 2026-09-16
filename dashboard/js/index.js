@@ -16,6 +16,18 @@ const filterCategory = document.querySelector("#filter-category");
 const filterPriority = document.querySelector("#filter-priority");
 const filterStatus = document.querySelector("#filter-status");
 
+if (typeof flatpickr !== "undefined") {
+    const configFlatpickr = {
+        locale: "es",
+        dateFormat: "Y-m-d",
+        minDate: "today",
+        disableMobile: "true"
+    };
+
+    if (taskStartDate) flatpickr(taskStartDate, configFlatpickr);
+    if (taskEndDate) flatpickr(taskEndDate, configFlatpickr);
+}
+
 const today = new Date().toISOString().split('T')[0];
 if (taskStartDate) taskStartDate.setAttribute('min', today);
 if (taskEndDate) taskEndDate.setAttribute('min', today);
