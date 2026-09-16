@@ -9,7 +9,7 @@
     --media: #D97706;
     --baja: #92B1D9;
     /*ESTADOS*/
-    --por-hacer: #C5221F;
+    --por-hacer: #281411;
     --en-progreso: #F59E0B;
     --finalizado: #5B83B6;
     /* TEXTO */
@@ -399,6 +399,23 @@ input.flatpickr-input:focus {
     flex-shrink: 0;
 }
 
+.task-list-panel .task-status.status-por-hacer {
+    background-color: var(--por-hacer) !important;
+    border-color: var(--por-hacer) !important;
+    color: #ffffff !important;
+}
+
+.task-list-panel .task-status.status-en-progreso {
+    background-color: var(--en-progreso) !important;
+    border-color: var(--en-progreso) !important;
+    color: var(--coarse-wool) !important;
+}
+
+.task-list-panel .task-status.status-finalizado {
+    background-color: var(--finalizado) !important;
+    border-color: var(--finalizado) !important;
+    color: #ffffff !important;
+}
 .task-list-panel .task-details,
 .task-list-panel .delete-button {
     white-space: nowrap;
@@ -418,8 +435,8 @@ input.flatpickr-input:focus {
 }
 
 .task-list-panel .delete-button {
-    background-color: var(--por-hacer);
-    border-color: var(--por-hacer);
+    background-color: #C5221F;
+    border-color: #C5221F;
     color: white;
 }
 

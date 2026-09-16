@@ -175,6 +175,7 @@ function createTaskElement(task) {
         const completedClass = task.completed ? "completed" : "";
         const checkedAttribute = task.completed ? "checked" : "";
         const disabledAttribute = task.completed ? "disabled" : "";
+        const statusClass = `status-${status.replace(" ", "-").toLowerCase()}`
         taskElement.innerHTML = `
         <div class="form-check form-switch">
             <input type="checkbox" class="form-check-input task-toggle" ${checkedAttribute} ${disabledAttribute} aria-label="Marcar tarea como completada">
@@ -183,7 +184,7 @@ function createTaskElement(task) {
             ${escapeHtml(task.name)}
         </span>
         <select
-            class="form-select task-status" ${disabledAttribute} aria-label="Cambiar estado de la tarea">
+            class="form-select task-status ${statusClass}" ${disabledAttribute} aria-label="Cambiar estado de la tarea">
             <option value="POR HACER" ${status === "POR HACER" ? "selected" : ""}>
                 Por hacer
             </option>
