@@ -12,6 +12,9 @@ const taskPriority = document.querySelector("#task-priority");
 const taskDescription = document.querySelector("#task-description");
 const taskStartDate = document.querySelector("#task-start-date");
 const taskEndDate = document.querySelector("#task-end-date");
+const filterCategory = document.querySelector("#filter-category");
+const filterPriority = document.querySelector("#filter-priority");
+const filterStatus = document.querySelector("#filter-status");
 
 if (!form) {
     console.error("No se encontró el formulario #task-form.");
@@ -76,6 +79,72 @@ function normalizeTaskStatus(task) {
     return "POR HACER";
 }
 
+function populateFilters() {
+    if (!filterCategory || !filterPriority || !filterStatus) {
+        return;
+    }
+
+    const selectedCategory = filterCategory.value;
+    const selectedPriority = filterPriority.value;
+    const selectedStatus = filterStatus.value;
+
+    const categories = [...new Set(taskManager.tasks.map(task => task.category).filter(category => category))];
+    const priorities = [...new Set(taskManager.tasks.map(task => task.priority).filter(priority => priority))];
+    const statuses = [...new Set(taskManager.tasks.map(task => normalizeTaskStatus(task)))];
+
+    filterCategory.innerHTML = `<option value="">Categoría</option>`;
+    filterPriority.innerHTML = `<option value="">Prioridad</option>`;
+    filterStatus.innerHTML = `<option value="">Estado</option>`;
+    categories.forEach(category => {
+        filterCategory.innerHTML += `
+            <option value="${escapeHtml(category)}">
+                ${escapeHtml(category)}
+            </option>`;
+    });
+    priorities.forEach(priority => {
+        const priorityNames = {
+            "1": "Baja",
+            "2": "Media",
+            "3": "Alta"
+        };
+        filterPriority.innerHTML += `
+            <option value="${escapeHtml(priority)}">
+                ${priorityNames[priority] || escapeHtml(priority)}
+            </option>`;
+    });
+    statuses.forEach(status => {
+        filterStatus.innerHTML += `
+            <option value="${escapeHtml(status)}">
+                ${escapeHtml(status)}
+            </option>`;
+    });
+
+    filterCategory.value = selectedCategory;
+    filterPriority.value = selectedPriority;
+    filterStatus.value = selectedStatus;
+}
+
+function getFilteredTasks() {
+    const category = filterCategory?.value || "";
+    const priority = filterPriority?.value || "";
+    const status = filterStatus?.value || "";
+
+    return taskManager.tasks.filter(task => {
+        const taskStatus = normalizeTaskStatus(task);
+
+        const matchesCategory =
+            !category || task.category === category;
+
+        const matchesPriority =
+            !priority || task.priority === priority;
+
+        const matchesStatus =
+            !status || taskStatus === status;
+
+        return (matchesCategory && matchesPriority && matchesStatus);
+    });
+}
+
 function createTaskElement(task) {
     const taskElement = document.createElement("li");
 
@@ -131,7 +200,13 @@ function renderTasks() {
     if (!taskList) {
         return;
     }
+
+    populateFilters();
+
+    const filteredTasks = getFilteredTasks();
+
     taskList.innerHTML = "";
+
     if (taskManager.tasks.length === 0) {
         taskList.innerHTML = `
             <li class="list-group-item empty-task-message">
@@ -139,7 +214,16 @@ function renderTasks() {
             </li>`;
         return;
     }
-    taskManager.tasks.forEach(task => {
+
+    if (filteredTasks.length === 0) {
+        taskList.innerHTML = `
+            <li class="list-group-item empty-task-message">
+                No hay tareas que coincidan con los filtros.
+            </li>`;
+        return;
+    }
+
+    filteredTasks.forEach(task => {
         const taskElement = createTaskElement(task);
         taskList.appendChild(taskElement);
     });
@@ -257,6 +341,12 @@ if (taskList) {
         }
         showTaskDetails(task);
     });
+}
+
+if (filterCategory && filterPriority && filterStatus) {
+    filterCategory.addEventListener("change", renderTasks);
+    filterPriority.addEventListener("change", renderTasks);
+    filterStatus.addEventListener("change", renderTasks);
 }
 
 function deleteTaskFromInterface(deleteButton) {
