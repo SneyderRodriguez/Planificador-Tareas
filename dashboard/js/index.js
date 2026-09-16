@@ -174,34 +174,26 @@ function createTaskElement(task) {
     } else {
         const completedClass = task.completed ? "completed" : "";
         const checkedAttribute = task.completed ? "checked" : "";
+        const disabledAttribute = task.completed ? "disabled" : "";
         taskElement.innerHTML = `
         <div class="form-check form-switch">
-            <input
-                type="checkbox"
-                class="form-check-input task-toggle"
-                ${checkedAttribute}
-                aria-label="Marcar tarea como completada">
+            <input type="checkbox" class="form-check-input task-toggle" ${checkedAttribute} ${disabledAttribute} aria-label="Marcar tarea como completada">
         </div>
         <span class="${completedClass}">
             ${escapeHtml(task.name)}
         </span>
-
         <select
-            class="form-select task-status"
-            aria-label="Cambiar estado de la tarea">
+            class="form-select task-status" ${disabledAttribute} aria-label="Cambiar estado de la tarea">
             <option value="POR HACER" ${status === "POR HACER" ? "selected" : ""}>
                 Por hacer
             </option>
-
             <option value="EN PROGRESO" ${status === "EN PROGRESO" ? "selected" : ""}>
                 En progreso
             </option>
-
             <option value="FINALIZADO" ${status === "FINALIZADO" ? "selected" : ""}>
                 Finalizado
             </option>
         </select>
-
         <button type="button" class="btn btn-secondary task-details">
             Detalles
         </button>

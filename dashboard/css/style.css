@@ -112,6 +112,7 @@ aside .btn-task-create:hover,
     border-bottom: 3px solid var(--night-rendezvous);
     display: inline-block;
     padding-bottom: 5px;
+    letter-spacing: 1px;
 }
 
 .paneles {
@@ -324,7 +325,7 @@ input.flatpickr-input:focus {
 .modal-header .modal-title {
     font-family: var(--font-title);
     font-size: 1.8rem;
-    letter-spacing: 1px; /* Le da un ligero respiro a las letras */
+    letter-spacing: 1px;
 }
 
 .modal-header .btn-close {
