@@ -37,8 +37,11 @@ aside {
     flex-direction: column;
     gap: 1.2rem;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-    min-height: 100vh;
     box-sizing: border-box;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
 }
 
 aside .perfil {
@@ -128,6 +131,8 @@ aside .btn-task-create:hover,
 .completed {
     text-decoration: line-through;
     opacity: 0.6;
+    transform: scale(0.98);
+    background-color: var(--finalizado) !important;
 }
 
 .task-form {
@@ -155,17 +160,23 @@ aside .btn-task-create:hover,
 
 .form-control,
 .form-select {
+    background-color: var(--mount-etna);
+    color: var(--sleepy-blue);
     border-color: var(--cape-cod-blue);
-    color: var(--coarse-wool);
     border-radius: 6px;
 }
-
+.form-control::placeholder {
+    color: var(--cape-cod-blue);
+}
 .form-control:focus,
 .form-select:focus {
     border-color: var(--night-rendezvous);
     box-shadow: 0 0 0 0.25rem rgba(101, 119, 122, 0.25);
 }
-
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
 .btn-primary {
     background-color: var(--coarse-wool) !important;
     border-color: var(--coarse-wool) !important;
@@ -200,9 +211,15 @@ aside .btn-task-create:hover,
     padding: 0.8rem 1rem;
     margin-bottom: 8px;
     border-radius: 8px !important;
-    background-color: #fafbfc;
+    background-color: var(--mount-etna);
+    color: var(--sleepy-blue);
+    border: 1px solid var(--night-rendezvous);
+    transition: all 0.3s ease-in-out;
 }
-
+.list-group-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
 .list-group-item span {
     font-weight: 500;
     color: var(--coarse-wool);
@@ -211,14 +228,18 @@ aside .btn-task-create:hover,
         text-decoration 0.2s ease;
 }
 
-.completed {
-    text-decoration: line-through;
-    opacity: 0.6;
-}
+.prioridad-1 { border-left: 5px solid var(--baja); }
+.prioridad-2 { border-left: 5px solid var(--media); }
+.prioridad-3 { border-left: 5px solid var(--alta); }
 
 .form-check-input:checked {
     background-color: var(--finalizado);
     border-color: var(--finalizado);
+}
+.actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
 }
 
 .modal-content {
@@ -245,7 +266,22 @@ aside .btn-task-create:hover,
     gap: 16px;
     margin-bottom: 25px;
 }
-
+.task-list-panel #task-list {
+    max-height: 420px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+.task-list-panel #task-list::-webkit-scrollbar {
+    width: 8px;
+}
+.task-list-panel #task-list::-webkit-scrollbar-track {
+    background: var(--night-rendezvous);
+    border-radius: 4px;
+}
+.task-list-panel #task-list::-webkit-scrollbar-thumb {
+    background: var(--sleepy-blue);
+    border-radius: 4px;
+}
 .task-list-panel {
     background-color: var(--night-rendezvous);
     padding: 1.8rem;
@@ -258,16 +294,30 @@ aside .btn-task-create:hover,
     display: flex;
     align-items: center;
     gap: 12px;
-
     padding: 1rem 1.25rem;
     margin-bottom: 8px;
-
-    border-color: #edf2f7;
     border-radius: 8px !important;
-    background-color: #fafbfc;
+}
+.task-list-panel .list-group-item.prioridad-1 {
+    background-color: var(--baja);
+    border-color: var(--baja);
+    color: var(--coarse-wool); 
+}
+
+.task-list-panel .list-group-item.prioridad-2 {
+    background-color: var(--media);
+    border-color: var(--media);
+    color: #ffffff; 
+}
+
+.task-list-panel .list-group-item.prioridad-3 {
+    background-color: var(--alta);
+    border-color: var(--alta);
+    color: #ffffff; 
 }
 
 .task-list-panel .list-group-item>span {
+    color: inherit; 
     flex: 1;
     min-width: 0;
 }
@@ -278,7 +328,6 @@ aside .btn-task-create:hover,
 }
 
 .task-list-panel .task-details,
-.task-list-panel .done-button,
 .task-list-panel .delete-button {
     white-space: nowrap;
     flex-shrink: 0;
@@ -296,21 +345,9 @@ aside .btn-task-create:hover,
     color: var(--coarse-wool);
 }
 
-.task-list-panel .done-button {
-    background-color: var(--finalizado);
-    border-color: var(--finalizado);
-    color: white;
-}
-
-.task-list-panel .done-button:hover {
-    background-color: var(--cape-cod-blue);
-    border-color: var(--cape-cod-blue);
-    color: white;
-}
-
 .task-list-panel .delete-button {
-    background-color: var(--alta);
-    border-color: var(--alta);
+    background-color: var(--por-hacer);
+    border-color: var(--por-hacer);
     color: white;
 }
 

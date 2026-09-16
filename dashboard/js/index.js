@@ -16,6 +16,10 @@ const filterCategory = document.querySelector("#filter-category");
 const filterPriority = document.querySelector("#filter-priority");
 const filterStatus = document.querySelector("#filter-status");
 
+const today = new Date().toISOString().split('T')[0];
+if (taskStartDate) taskStartDate.setAttribute('min', today);
+if (taskEndDate) taskEndDate.setAttribute('min', today);
+
 if (!form) {
     console.error("No se encontró el formulario #task-form.");
 }
@@ -129,33 +133,36 @@ function getFilteredTasks() {
     const priority = filterPriority?.value || "";
     const status = filterStatus?.value || "";
 
-    return taskManager.tasks.filter(task => {
+const filtered = taskManager.tasks.filter(task => {
         const taskStatus = normalizeTaskStatus(task);
+        const matchesCategory = !category || task.category === category;
+        const matchesPriority = !priority || task.priority === priority;
+        const matchesStatus = !status || taskStatus === status;
 
-        const matchesCategory =
-            !category || task.category === category;
-
-        const matchesPriority =
-            !priority || task.priority === priority;
-
-        const matchesStatus =
-            !status || taskStatus === status;
-
-        return (matchesCategory && matchesPriority && matchesStatus);
+        return matchesCategory && matchesPriority && matchesStatus;
     });
+    return filtered.sort((a, b) => Number(b.priority) - Number(a.priority));
 }
 
 function createTaskElement(task) {
     const taskElement = document.createElement("li");
-
     const status = normalizeTaskStatus(task);
-    const completedClass = task.completed ? "completed" : "";
-    const checkedAttribute = task.completed ? "checked" : "";
+    const isTaskCreatePage = document.querySelector("#task-form") !== null;
 
-    taskElement.className = "list-group-item";
+    taskElement.className = `list-group-item prioridad-${task.priority} estado-${status.replace(" ", "-").toLowerCase()}`;
     taskElement.dataset.taskId = task.id;
 
-    taskElement.innerHTML = `
+    if (isTaskCreatePage) {
+        taskElement.innerHTML = `
+            <span>${escapeHtml(task.name)}</span>
+            <div class="actions">
+                <button type="button" class="btn btn-secondary task-details">Detalles</button>
+                <button type="button" class="btn btn-danger delete-button">Eliminar</button>
+            </div>`;
+    } else {
+        const completedClass = task.completed ? "completed" : "";
+        const checkedAttribute = task.completed ? "checked" : "";
+        taskElement.innerHTML = `
         <div class="form-check form-switch">
             <input
                 type="checkbox"
@@ -186,13 +193,10 @@ function createTaskElement(task) {
         <button type="button" class="btn btn-secondary task-details">
             Detalles
         </button>
-        <button type="button" class="btn btn-success done-button">
-            Mark As Done
-        </button>
         <button type="button" class="btn btn-danger delete-button">
             Eliminar
         </button>`;
-
+    }
     return taskElement;
 }
 
@@ -204,28 +208,19 @@ function renderTasks() {
     populateFilters();
 
     const filteredTasks = getFilteredTasks();
-
+    const isTaskCreatePage = document.querySelector("#task-form") !== null;
     taskList.innerHTML = "";
 
-    if (taskManager.tasks.length === 0) {
-        taskList.innerHTML = `
-            <li class="list-group-item empty-task-message">
-                No hay tareas creadas.
-            </li>`;
+    if (filteredTasks.length === 0) {
+        taskList.innerHTML = `<li class="list-group-item empty-task-message">No hay tareas.</li>`;
         return;
     }
-
-    if (filteredTasks.length === 0) {
-        taskList.innerHTML = `
-            <li class="list-group-item empty-task-message">
-                No hay tareas que coincidan con los filtros.
-            </li>`;
-        return;
+    if (isTaskCreatePage) {
+        filteredTasks = filteredTasks.reverse().slice(0, 4);
     }
 
     filteredTasks.forEach(task => {
-        const taskElement = createTaskElement(task);
-        taskList.appendChild(taskElement);
+        taskList.appendChild(createTaskElement(task));
     });
 }
 
@@ -324,12 +319,6 @@ if (taskList) {
             return;
         }
 
-        if (event.target.classList.contains("done-button")) {
-            taskManager.updateTaskStatus(taskId, true);
-            renderTasks();
-            return;
-        }
-
         const deleteButton = event.target.closest(".delete-button");
         if (deleteButton) {
             deleteTaskFromInterface(deleteButton);
@@ -386,7 +375,6 @@ function deleteTaskFromInterface(deleteButton) {
 
 function showTaskDetails(task) {
     const detailsModalElement = document.querySelector("#task-details-modal");
-
     if (!detailsModalElement) {
         const detailsText = `
                 Nombre: ${task.name}
@@ -421,6 +409,12 @@ function showTaskDetails(task) {
         "#modal-task-status"
     );
 
+    const priorityNames = {
+        "1": "Baja",
+        "2": "Media",
+        "3": "Alta"
+    };
+
     if (modalName) {
         modalName.textContent = task.name;
     }
@@ -434,7 +428,7 @@ function showTaskDetails(task) {
     }
 
     if (modalPriority) {
-        modalPriority.textContent = task.priority;
+        modalPriority.textContent = priorityNames[task.priority] || task.priority;
     }
 
     if (modalStartDate) {
