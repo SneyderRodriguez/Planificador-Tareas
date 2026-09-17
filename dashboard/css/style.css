@@ -339,7 +339,7 @@ input.flatpickr-input:focus {
     margin-bottom: 25px;
 }
 .task-list-panel #task-list {
-    max-height: 420px;
+    height: 400px;
     overflow-y: auto;
     padding-right: 10px;
 }
@@ -446,9 +446,8 @@ input.flatpickr-input:focus {
     color: white;
 }
 
-/* ===== Lista de tareas en el panel derecho de "Crear Tarea" ===== */
 .to-do-list #task-list {
-    max-height: 420px;
+    height: 300px;
     overflow-y: auto;
     padding-right: 10px;
 }
