@@ -1,73 +1,32 @@
 class TaskManager {
     constructor() {
-        this.storageKey = "tasks";
-        this.currentIdStorageKey = "currentId"
-        this.tasks = this.loadTasks();
-        this.currentId = this.loadCurrentId();
+        this.apiUrl = typeof API_BASE_URL !== "undefined"
+            ? API_BASE_URL
+            : "http://localhost:8080/api/tasks";
+        this.tasks = [];
     }
 
-    loadTasks() {
-        const savedTasks = localStorage.getItem(this.storageKey);
-        if (!savedTasks) {
-            return [];
-        }
+    async loadTasks() {
         try {
-            const parsedTasks = JSON.parse(savedTasks);
-            if (!Array.isArray(parsedTasks)) {
-                console.warn("Los datos guardados no tienen un formato válido.");
-                return [];
+            const response = await fetch(this.apiUrl);
+            if (!response.ok) {
+                throw new Error(`Error HTTP ${response.status}`);
             }
-            return parsedTasks;
+            this.tasks = await response.json();
+            return this.tasks;
         } catch (error) {
             console.error("No se pudieron cargar las tareas:", error);
-            return [];
+            this.tasks = [];
+            throw error;
         }
     }
 
-    loadCurrentId(){
-        const savedCurrentId = localStorage.getItem(this.currentIdStorageKey);
-        if(savedCurrentId === null){
-            return this.getNextId();
-        }
-        const currentId = Number(savedCurrentId);
-        if (!Number.isInteger(currentId) || currentId <1) {
-            console.warn("El currentId guardado no es válido.");
-            return this.getNextId();
-        }
-        return currentId;
+    getTaskById(taskId) {
+        return this.tasks.find(task => task.id === taskId);
     }
 
-    saveTasks() {
-        try {
-            localStorage.setItem(
-                this.storageKey,
-                JSON.stringify(this.tasks)
-            );
-            localStorage.setItem(
-                this.currentIdStorageKey, 
-                String(this.currentId)
-            );
-        } catch (error) {
-            console.error("No se pudieron guardar las tareas:", error);
-        }
-    }
-
-    getNextId() {
-        if (this.tasks.length === 0) {
-            return 1;
-        }
-        const ids = this.tasks
-            .map(task => Number(task.id))
-            .filter(id => Number.isInteger(id));
-        if (ids.length === 0) {
-            return 1;
-        }
-        return Math.max(...ids) + 1;
-    }
-
-    addTask(name, category, priority, description, startDate, dueDate) {
+    async addTask(name, category, priority, description, startDate, dueDate) {
         const newTask = {
-            id: this.currentId,
             name,
             category,
             priority,
@@ -78,51 +37,65 @@ class TaskManager {
             completed: false
         };
 
-        this.tasks.push(newTask);
-        this.currentId++;
-        this.saveTasks();
-        return newTask;
+        const response = await fetch(this.apiUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newTask)
+        });
+
+        if (!response.ok) {
+            const errorBody = await response.json().catch(() => null);
+            throw new Error(errorBody?.message || `Error HTTP ${response.status}`);
+        }
+
+        const savedTask = await response.json();
+        this.tasks.push(savedTask);
+        return savedTask;
     }
 
-    getTaskById(taskId) {
-        return this.tasks.find(task => task.id === taskId);
-    }
-
-    updateTask(taskId, changes) {
+    async updateTask(taskId, changes) {
         const task = this.getTaskById(taskId);
         if (!task) {
             console.warn(`No existe una tarea con el ID ${taskId}.`);
             return false;
         }
-        Object.assign(task, changes);
-        this.saveTasks();
+
+        const updatedPayload = { ...task, ...changes };
+
+        const response = await fetch(`${this.apiUrl}/${taskId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updatedPayload)
+        });
+
+        if (!response.ok) {
+            const errorBody = await response.json().catch(() => null);
+            throw new Error(errorBody?.message || `Error HTTP ${response.status}`);
+        }
+
+        const savedTask = await response.json();
+        Object.assign(task, savedTask);
         return true;
     }
 
-    updateTaskStatus(taskId, completed) {
-        const task = this.getTaskById(taskId);
-        if (!task) {
-            console.warn(`No existe una tarea con el ID ${taskId}.`);
+    async updateTaskStatus(taskId, completed) {
+        const status = completed ? "FINALIZADO" : "POR HACER";
+        return this.updateTask(taskId, { completed, status });
+    }
+
+    async deleteTask(taskId) {
+        const response = await fetch(`${this.apiUrl}/${taskId}`, {
+            method: "DELETE"
+        });
+
+        if (response.status === 404) {
             return false;
         }
-        task.completed = completed;
-        task.status = completed ? "FINALIZADO" : "POR HACER";
-        this.saveTasks();
-        return true;
-    }
+        if (!response.ok) {
+            throw new Error(`Error HTTP ${response.status}`);
+        }
 
-    deleteTask(taskId) {
-        const newTasks = [];
-        for (const task of this.tasks) {
-            if (task.id !== taskId) {
-                newTasks.push(task);
-            }
-        }
-        const taskWasDeleted = newTasks.length !== this.tasks.length;
-        this.tasks = newTasks;
-        if (taskWasDeleted) {
-            this.saveTasks();
-        }
-        return taskWasDeleted;
+        this.tasks = this.tasks.filter(task => task.id !== taskId);
+        return true;
     }
 }

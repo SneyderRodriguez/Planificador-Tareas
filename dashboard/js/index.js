@@ -1,9 +1,5 @@
 const taskManager = new TaskManager();
 
-console.log("Instancia de TaskManager:", taskManager);
-console.log("Tareas guardadas:", taskManager.tasks);
-console.log("¿Es una instancia válida?", taskManager instanceof TaskManager);
-
 const form = document.querySelector("#task-form");
 const taskList = document.querySelector("#task-list");
 const taskName = document.querySelector("#task-name");
@@ -157,7 +153,7 @@ function getFilteredTasks() {
     const priority = filterPriority?.value || "";
     const status = filterStatus?.value || "";
 
-const filtered = taskManager.tasks.filter(task => {
+    const filtered = taskManager.tasks.filter(task => {
         const taskStatus = normalizeTaskStatus(task);
         const matchesCategory = !category || task.category === category;
         const matchesPriority = !priority || task.priority === priority;
@@ -270,7 +266,7 @@ function showMessage(title, text, icon) {
 }
 
 if (form) {
-    form.addEventListener("submit", event => {
+    form.addEventListener("submit", async event => {
         event.preventDefault();
         const taskData = {
             name: taskName.value.trim(),
@@ -287,53 +283,51 @@ if (form) {
             return;
         }
 
-        taskManager.addTask(
-            taskData.name,
-            taskData.category,
-            taskData.priority,
-            taskData.description,
-            taskData.startDate,
-            taskData.dueDate
-        );
-        renderTasks();
-        resetTaskForm();
-        showMessage("Tarea creada", "La tarea se ha creado correctamente.", "success");
+        try {
+            await taskManager.addTask(
+                taskData.name,
+                taskData.category,
+                taskData.priority,
+                taskData.description,
+                taskData.startDate,
+                taskData.dueDate
+            );
+            renderTasks();
+            resetTaskForm();
+            showMessage("Tarea creada", "La tarea se ha creado correctamente.", "success");
+        } catch (error) {
+            showMessage("Error al crear la tarea", error.message, "error");
+        }
     });
 }
 
 if (taskList) {
-    taskList.addEventListener("change", event => {
+    taskList.addEventListener("change", async event => {
         const taskElement = event.target.closest("[data-task-id]");
-        if (!taskElement) {
-            return;
-        }
+        if (!taskElement) return;
 
         const taskId = Number(taskElement.dataset.taskId);
         const task = taskManager.getTaskById(taskId);
-
         if (!task) {
             console.warn("No se encontró la tarea seleccionada.");
             return;
         }
 
-        if (event.target.classList.contains("task-toggle")) {
-            const completed = event.target.checked;
+        try {
+            if (event.target.classList.contains("task-toggle")) {
+                await taskManager.updateTaskStatus(taskId, event.target.checked);
+                renderTasks();
+                return;
+            }
 
-            taskManager.updateTaskStatus(taskId, completed);
-            renderTasks();
-
-            return;
-        }
-
-        if (event.target.classList.contains("task-status")) {
-            const newStatus = event.target.value;
-            const completed = newStatus === "FINALIZADO";
-
-            taskManager.updateTask(taskId, {
-                status: newStatus,
-                completed
-            });
-
+            if (event.target.classList.contains("task-status")) {
+                const newStatus = event.target.value;
+                const completed = newStatus === "FINALIZADO";
+                await taskManager.updateTask(taskId, { status: newStatus, completed });
+                renderTasks();
+            }
+        } catch (error) {
+            showMessage("Error al actualizar", error.message, "error");
             renderTasks();
         }
     });
@@ -389,14 +383,12 @@ async function confirmAction(title, text) {
 
 async function deleteTaskFromInterface(deleteButton) {
     const parentTask = deleteButton.closest("[data-task-id]");
-
     if (!parentTask) {
         console.warn("No se encontró el contenedor de la tarea.");
         return;
     }
 
     const taskId = Number(parentTask.dataset.taskId);
-
     if (!Number.isInteger(taskId)) {
         console.warn("El identificador de la tarea no es válido.");
         return;
@@ -412,17 +404,19 @@ async function deleteTaskFromInterface(deleteButton) {
         "¿Eliminar tarea?",
         `¿Quieres eliminar la tarea "${task.name}"?`
     );
-    if (!confirmDelete) {
-        return;
-    }
+    if (!confirmDelete) return;
 
-    const taskWasDeleted = taskManager.deleteTask(taskId);
-    if (!taskWasDeleted) {
-        showMessage("No se pudo eliminar", "La tarea no fue encontrada.", "error");
-        return;
+    try {
+        const taskWasDeleted = await taskManager.deleteTask(taskId);
+        if (!taskWasDeleted) {
+            showMessage("No se pudo eliminar", "La tarea no fue encontrada.", "error");
+            return;
+        }
+        renderTasks();
+        showMessage("Tarea eliminada", "La tarea se eliminó correctamente.", "success");
+    } catch (error) {
+        showMessage("Error al eliminar", error.message, "error");
     }
-    renderTasks();
-    showMessage("Tarea eliminada", "La tarea se eliminó correctamente.", "success");
 }
 
 function showTaskDetails(task) {
@@ -505,4 +499,13 @@ function showTaskDetails(task) {
         modal.show();
     }
 }
-renderTasks();
+async function initTasks() {
+    try {
+        await taskManager.loadTasks();
+    } catch (error) {
+        showMessage("Error de conexión", "No se pudieron cargar las tareas desde el servidor.", "error");
+    }
+    renderTasks();
+}
+
+initTasks();
