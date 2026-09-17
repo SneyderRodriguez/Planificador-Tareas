@@ -435,8 +435,8 @@ input.flatpickr-input:focus {
 }
 
 .task-list-panel .delete-button {
-    background-color: #281411;
-    border-color: #281411;
+    background-color: #374151;
+    border-color: #1F2937;
     color: white;
 }
 
@@ -522,8 +522,8 @@ input.flatpickr-input:focus {
 }
 
 .to-do-list .delete-button {
-    background-color: #281411;
-    border-color: #281411;
+    background-color: #374151;
+    border-color: #1F2937;
     color: #ffffff;
 }
 
