@@ -16,6 +16,9 @@ const filterCategory = document.querySelector("#filter-category");
 const filterPriority = document.querySelector("#filter-priority");
 const filterStatus = document.querySelector("#filter-status");
 
+let fpStartDate = null;
+let fpEndDate = null;
+
 if (typeof flatpickr !== "undefined") {
     const configFlatpickr = {
         locale: "es",
@@ -24,8 +27,17 @@ if (typeof flatpickr !== "undefined") {
         disableMobile: "true"
     };
 
-    if (taskStartDate) flatpickr(taskStartDate, configFlatpickr);
-    if (taskEndDate) flatpickr(taskEndDate, configFlatpickr);
+    if (taskStartDate) fpStartDate = flatpickr(taskStartDate, configFlatpickr);
+    if (taskEndDate) fpEndDate = flatpickr(taskEndDate, configFlatpickr);
+}
+
+// form.reset() no limpia el estado interno de flatpickr (selectedDates),
+// por eso los campos de fecha quedaban con el valor anterior. Esta función
+// limpia tanto el formulario nativo como las instancias de flatpickr.
+function resetTaskForm() {
+    form.reset();
+    if (fpStartDate) fpStartDate.clear();
+    if (fpEndDate) fpEndDate.clear();
 }
 
 const today = new Date().toISOString().split('T')[0];
@@ -168,8 +180,18 @@ function createTaskElement(task) {
         taskElement.innerHTML = `
             <span>${escapeHtml(task.name)}</span>
             <div class="actions">
-                <button type="button" class="btn btn-secondary task-details">Detalles</button>
-                <button type="button" class="btn btn-danger delete-button">Eliminar</button>
+                <button type="button" class="btn btn-secondary task-details">
+                <span class="material-symbols-outlined">
+read_more
+</span>
+                    Detalles
+                </button>
+                <button type="button" class="btn btn-danger delete-button">
+                                <span class="material-symbols-outlined">
+delete_sweep
+</span>
+                    Eliminar
+                </button>
             </div>`;
     } else {
         const completedClass = task.completed ? "completed" : "";
@@ -196,9 +218,15 @@ function createTaskElement(task) {
             </option>
         </select>
         <button type="button" class="btn btn-secondary task-details">
+        <span class="material-symbols-outlined">
+read_more
+</span>
             Detalles
         </button>
         <button type="button" class="btn btn-danger delete-button">
+        <span class="material-symbols-outlined">
+delete_sweep
+</span>
             Eliminar
         </button>`;
     }
@@ -212,7 +240,7 @@ function renderTasks() {
 
     populateFilters();
 
-    const filteredTasks = getFilteredTasks();
+    let filteredTasks = getFilteredTasks();
     const isTaskCreatePage = document.querySelector("#task-form") !== null;
     taskList.innerHTML = "";
 
@@ -268,7 +296,7 @@ if (form) {
             taskData.dueDate
         );
         renderTasks();
-        form.reset();
+        resetTaskForm();
         showMessage("Tarea creada", "La tarea se ha creado correctamente.", "success");
     });
 }
@@ -343,7 +371,23 @@ if (filterCategory && filterPriority && filterStatus) {
     filterStatus.addEventListener("change", renderTasks);
 }
 
-function deleteTaskFromInterface(deleteButton) {
+async function confirmAction(title, text) {
+    if (typeof Swal !== "undefined") {
+        const result = await Swal.fire({
+            title,
+            text,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Sí, eliminar",
+            cancelButtonText: "Cancelar",
+            reverseButtons: true
+        });
+        return result.isConfirmed;
+    }
+    return confirm(`${title}\n${text}`);
+}
+
+async function deleteTaskFromInterface(deleteButton) {
     const parentTask = deleteButton.closest("[data-task-id]");
 
     if (!parentTask) {
@@ -364,7 +408,10 @@ function deleteTaskFromInterface(deleteButton) {
         return;
     }
 
-    const confirmDelete = confirm(`¿Quieres eliminar la tarea "${task.name}"?`);
+    const confirmDelete = await confirmAction(
+        "¿Eliminar tarea?",
+        `¿Quieres eliminar la tarea "${task.name}"?`
+    );
     if (!confirmDelete) {
         return;
     }

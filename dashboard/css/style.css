@@ -9,7 +9,7 @@
     --media: #D97706;
     --baja: #92B1D9;
     /*ESTADOS*/
-    --por-hacer: #281411;
+    --por-hacer: #C5221F;
     --en-progreso: #F59E0B;
     --finalizado: #5B83B6;
     /* TEXTO */
@@ -435,8 +435,8 @@ input.flatpickr-input:focus {
 }
 
 .task-list-panel .delete-button {
-    background-color: #C5221F;
-    border-color: #C5221F;
+    background-color: #281411;
+    border-color: #281411;
     color: white;
 }
 
@@ -446,23 +446,97 @@ input.flatpickr-input:focus {
     color: white;
 }
 
-@media (max-width: 1200px) {
-    .paneles {
-        grid-template-columns: 1fr;
-    }
+/* ===== Lista de tareas en el panel derecho de "Crear Tarea" ===== */
+.to-do-list #task-list {
+    max-height: 420px;
+    overflow-y: auto;
+    padding-right: 10px;
 }
 
-@media (max-width: 768px) {
-    main {
-        flex-direction: column;
-    }
+.to-do-list #task-list::-webkit-scrollbar {
+    width: 8px;
+}
 
-    aside {
-        width: 100%;
-    }
+.to-do-list #task-list::-webkit-scrollbar-track {
+    background: var(--night-rendezvous);
+    border-radius: 4px;
+}
 
-    .form-bottom {
-        grid-template-columns: 1fr;
-    }
+.to-do-list #task-list::-webkit-scrollbar-thumb {
+    background: var(--sleepy-blue);
+    border-radius: 4px;
+}
 
+.to-do-list .list-group-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 1rem 1.25rem;
+}
+
+.to-do-list .list-group-item span {
+    flex: 1;
+    min-width: 0;
+    color: inherit;
+    word-break: break-word;
+    white-space: normal;
+}
+
+.to-do-list .list-group-item.prioridad-1 {
+    background-color: var(--baja);
+    border-color: var(--baja);
+    color: var(--coarse-wool);
+}
+
+.to-do-list .list-group-item.prioridad-2 {
+    background-color: var(--media);
+    border-color: var(--media);
+    color: #ffffff;
+}
+
+.to-do-list .list-group-item.prioridad-3 {
+    background-color: var(--alta);
+    border-color: var(--alta);
+    color: #ffffff;
+}
+
+.to-do-list .actions {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.to-do-list .actions .btn {
+    white-space: nowrap;
+}
+
+.to-do-list .task-details {
+    background-color: var(--sleepy-blue);
+    border-color: var(--sleepy-blue);
+    color: var(--coarse-wool);
+}
+
+.to-do-list .task-details:hover {
+    background-color: var(--cape-cod-blue);
+    border-color: var(--cape-cod-blue);
+    color: var(--coarse-wool);
+}
+
+.to-do-list .delete-button {
+    background-color: #281411;
+    border-color: #281411;
+    color: #ffffff;
+}
+
+.to-do-list .delete-button:hover {
+    background-color: var(--mount-etna);
+    border-color: var(--mount-etna);
+    color: #ffffff;
+}
+
+.to-do-list .empty-task-message {
+    display: block;
+    text-align: center;
+    color: var(--sleepy-blue);
+    background-color: var(--mount-etna);
 }
