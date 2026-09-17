@@ -106,11 +106,11 @@ También puedes utilizar una extensión como **Live Server** en Visual Studio Co
 
 ---
 
-## 🌐 Portafolio en línea
+## 🌐 Demostración
 
-Puedes visitar la versión desplegada del portafolio:
+Puedes visitar la versión desplegada de la plataforma:
 
-**[sneyderrodriguez.netlify.app](https://sneyderrodriguez.netlify.app/)**
+**[sneyderrodriguez.netlify.app](https://thyra.netlify.app/)**
 
 ---
 
