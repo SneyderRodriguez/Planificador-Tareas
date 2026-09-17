@@ -2,7 +2,7 @@ class TaskManager {
     constructor() {
         this.apiUrl = typeof API_BASE_URL !== "undefined"
             ? API_BASE_URL
-            : "http://localhost:8080/api/tasks";
+            : "https://thyra-backend.onrender.com";
         this.tasks = [];
     }
 
