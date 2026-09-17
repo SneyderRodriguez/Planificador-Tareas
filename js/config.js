@@ -1,1 +1,1 @@
-const API_BASE_URL = "http://localhost:8080/api/tasks"
+const API_BASE_URL = "https://thyra-backend.onrender.com"
