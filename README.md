@@ -110,13 +110,13 @@ También puedes utilizar una extensión como **Live Server** en Visual Studio Co
 
 Puedes visitar la versión desplegada de la plataforma:
 
-**[sneyderrodriguez.netlify.app](https://hyratask.netlify.app/)**
+**[planificadortareas.netlify.app](https://thyratask.netlify.app/)**
 
 ---
 
 ## 🌐 Enlaces del Proyecto
 🔗 **Repositorio GitHub:** [Planificador-Tareas](https://github.com/SneyderRodriguez/Portafolio.git)
-🌐 **Sitio Web (Demo):** [planificadortareas.netlify.app](https://hyratask.netlify.app/)
+🌐 **Sitio Web (Demo):** [planificadortareas.netlify.app](https://thyratask.netlify.app/)
 🎨 **Diseño en Figma:** [Ver prototipo interactivo](https://www.figma.com/design/nlFICrWEFIUmrLWeGmzA3Q/Proyecto-Final?node-id=0-1&t=eTfguzsXhPs48kpi-1)
 📋 **Tablero de Trello:** [Ver gestión ágil](https://trello.com/invite/b/6a7c84bcd40168cda8318782/ATTIa6bb7f8569b7329eb7dd04a76495db530B915817/to-do)
 
