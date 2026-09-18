@@ -1,14 +1,11 @@
 class TaskManager {
     constructor() {
-        this.apiUrl = typeof API_BASE_URL !== "undefined"
-            ? API_BASE_URL
-            : "https://thyra-backend.onrender.com";
         this.tasks = [];
     }
 
     async loadTasks() {
         try {
-            const response = await fetch(this.apiUrl);
+            const response = await apiFetch("/tasks");
             if (!response.ok) {
                 throw new Error(`Error HTTP ${response.status}`);
             }
@@ -26,20 +23,10 @@ class TaskManager {
     }
 
     async addTask(name, category, priority, description, startDate, dueDate) {
-        const newTask = {
-            name,
-            category,
-            priority,
-            description,
-            startDate,
-            dueDate,
-            status: "POR HACER",
-            completed: false
-        };
+        const newTask = { name, category, priority, description, startDate, dueDate, status: "POR HACER", completed: false };
 
-        const response = await fetch(this.apiUrl, {
+        const response = await apiFetch("/tasks", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(newTask)
         });
 
@@ -62,9 +49,8 @@ class TaskManager {
 
         const updatedPayload = { ...task, ...changes };
 
-        const response = await fetch(`${this.apiUrl}/${taskId}`, {
+        const response = await apiFetch(`/tasks/${taskId}`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(updatedPayload)
         });
 
@@ -84,9 +70,7 @@ class TaskManager {
     }
 
     async deleteTask(taskId) {
-        const response = await fetch(`${this.apiUrl}/${taskId}`, {
-            method: "DELETE"
-        });
+        const response = await apiFetch(`/tasks/${taskId}`, { method: "DELETE" });
 
         if (response.status === 404) {
             return false;
